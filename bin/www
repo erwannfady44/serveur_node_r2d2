@@ -7,7 +7,9 @@
 const app = require('../app');
 const debug = require('debug')('serveur-node:server');
 const http = require('http');
-const ws = require('ws')
+const ws = require('ws');
+
+const socketController = require('../controllers/socket')
 
 
 /**
@@ -24,7 +26,7 @@ app.set('port', port);
 const server = http.createServer(app);
 const wss = new ws.Server({server: server, path: "/webSocket"});
 
-wss.on('connection', socketController.index);
+wss.on('connection', socketController.connected);
 
 /**
  * Listen on provided port, on all network interfaces.
