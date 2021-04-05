@@ -1,4 +1,4 @@
-const usbSerial = 'COM4';
+const usbSerial = 'COM3';
 const SerialPort = require('serialport');
 
 const mega = new SerialPort(usbSerial, {

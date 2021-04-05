@@ -6,7 +6,6 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "avrgirl-arduino": "^5.0.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
@@ -16,6 +15,7 @@
     "usb": "^1.6.5"
   },
   "devDependencies": {
-    "serialport": "^9.0.7"
+    "serialport": "^9.0.7",
+    "ws": "^7.4.4"
   }
 }
