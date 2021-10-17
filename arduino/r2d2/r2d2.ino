@@ -1,18 +1,25 @@
 int commande[4];
+
+const int leftforward = 4;
+const int leftbackward = 5;
+const int rightforward = 6;
+const int rightbackward = 7;
+
 void setup() {
   Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
+
+  pinMode(leftforward, OUTPUT);
+  pinMode(leftbackward, OUTPUT);
+  pinMode(rightforward, OUTPUT);
+  pinMode(rightbackward, OUTPUT);
 }
 
 void loop() {
   String msg = readData();
   if (msg != "") {
     decodePayload(msg, commande);
-  
-    if (commande[0] == 1)
-      digitalWrite(LED_BUILTIN, HIGH);
-    else 
-      digitalWrite(LED_BUILTIN, LOW);
+    
   }
   delay(50);
 }
@@ -84,4 +91,38 @@ int mathPow(int x, int y) {
   }
 
   return result;
+}
+
+void move(int commande[]) {
+   switch (commande[0]) {
+      //Si on veut backwardr
+      case 1 :
+         analogWrite(leftbackward, commande[1]);
+         break;
+
+      case 2 :
+         analogWrite(leftforward, commande[1]);
+         break;
+
+      default :
+         analogWrite(leftforward, 0);
+         analogWrite(leftbackward, 0);
+         break;
+   }
+
+   switch (commande[2]) {
+      //Si on veut backwardr
+      case 1 :
+         analogWrite(rightbackward, commande[3]);
+         break;
+
+      case 2 :
+         analogWrite(rightforward, commande[3]);
+         break;
+
+      default :
+         analogWrite(rightforward, 0);
+         analogWrite(rightbackward, 0);
+         break;
+   }
 }
