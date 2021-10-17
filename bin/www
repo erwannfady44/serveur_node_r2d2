@@ -24,7 +24,7 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-const wss = new ws.Server({server: server, path: "/webSocket"});
+var wss = new ws.Server({server: server, path: "/webSocket"});
 
 wss.on('connection', socketController.connected);
 
