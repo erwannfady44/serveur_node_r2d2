@@ -2,20 +2,27 @@
 const usbSerial = 'COM4';
 const SerialPort = require('serialport');
 
-const mega = new SerialPort(usbSerial, {
-    baudRate: 9600
-})
+const User = require('../Models/User');
+const Stack = require('../Models/Stack')
+
+let mega = null;
+
 exports.connected = (ws) => {
     mega.on('open', () => {
         console.log("connection open")
     });
 
     ws.on('connection', () => {
-        console.log("connected")
+        console.log('connected');
+        console.log(url);
     })
 
     ws.on('message', (msg) => {
 
+        function firstMessage() {
+
+        }
+        console.log(msg)
         let data = JSON.parse(msg)
         let payload = "01" + data.direction1.toString(16).toUpperCase() +
             "02" +
@@ -47,3 +54,4 @@ exports.connected = (ws) => {
         console.log('data received: ' + data);
     });
 }
+
