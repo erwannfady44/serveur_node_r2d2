@@ -19,9 +19,13 @@ void loop() {
   String msg = readData();
   if (msg != "") {
     decodePayload(msg, commande);
-    
+    if (commande[0] == 2)
+      digitalWrite(LED_BUILTIN, HIGH);
+    else
+      digitalWrite(LED_BUILTIN, LOW);
   }
   delay(50);
+
 }
 
 String readData() {

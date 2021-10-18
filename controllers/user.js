@@ -48,7 +48,7 @@ exports.signIp = (req, res) => {
                                 idUser: user._id,
                                 token: jwt.sign({
                                     idUser: user._id,
-                                }, keyToken, {expireIn: '24h'})
+                                }, keyToken)
                             })
                         }
                     })
