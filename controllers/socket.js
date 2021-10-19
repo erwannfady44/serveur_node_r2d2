@@ -1,5 +1,5 @@
-//const usbSerial = '/dev/ttyUSB0';
-const usbSerial = 'COM4';
+const usbSerial = '/dev/ttyUSB0';
+//const usbSerial = 'COM4';
 const SerialPort = require('serialport');
 const jwt = require('jsonwebtoken');
 
@@ -94,7 +94,7 @@ exports.connected = (ws) => {
 
                                 let stack = new Stack({
                                     idUser: user._id,
-                                    rank: userRank % 500
+                                    rank: userRank % 5000
                                 });
                                 stack.save()
                                     .then(async () => {
