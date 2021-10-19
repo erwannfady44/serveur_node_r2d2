@@ -10,22 +10,21 @@ const keyToken = 'P7H}9C7ccv^Sk7Yia0C1Te1o3g2gqTt6EmuyIi.g8(}iQLM+sGX5577&0SF)e5
 let token = "";
 
 let mega = null;
+
 let init = false;
+let rankController = -1;
 
 exports.connected = (ws) => {
+    ws.on('connection', async () => {
+
+    })
     ws.on('message', async (msg) => {
         let data = JSON.parse(msg)
 
         //connection init
         if (data.token === "") {
             try {
-                let rank = await initConnection()
-                init = true;
-                if (rank === 0) {
-                    mega = new SerialPort(usbSerial, {
-                        baudRate: 9600
-                    });
-                }
+                await initConnection()
             } catch (err) {
                 console.log(err.message)
                 ws.send(JSON.stringify(err));
@@ -34,9 +33,9 @@ exports.connected = (ws) => {
             token = data.token
             const decodedToken = jwt.verify(data.token, keyToken);
             const rank = decodedToken.rank;
-            if (rank === 0) {
+            if (rank === rankController) {
                 //init arduino
-                if (!init) {
+                if (!mega) {
                     mega = new SerialPort(usbSerial, {
                         baudRate: 9600
                     });
@@ -51,6 +50,7 @@ exports.connected = (ws) => {
                     (data.speed2 < 16 ? '0' + data.speed2.toString(16).toUpperCase() : data.speed2.toString(16).toUpperCase())
 
                 //send data to arduino
+                console.log(payload)
                 mega.write(payload, (err) => {
                     if (err) {
                         ws.send(err)
@@ -64,6 +64,11 @@ exports.connected = (ws) => {
                 mega.on('data', function (data) {
                     console.log('data received: ' + data);
                 });
+            }
+            else {
+                //update rankController
+                rankController = await getRankController();
+                ws.send("not your turn");
             }
         }
 
@@ -80,26 +85,40 @@ exports.connected = (ws) => {
                 });
                 user.save()
                     .then(() => {
-                        Stack.countDocuments({})
+                        Stack.find({}).sort({rank: -1}).limit(1)
                             .then(count => {
+                                let userRank = count.length === 0 ? 0 : count[0].rank + 1;
+
                                 let stack = new Stack({
                                     idUser: user._id,
-                                    rank: count
+                                    rank: userRank % 500
                                 });
                                 stack.save()
-                                    .then(() => {
+                                    .then(async () => {
                                         ws.send(JSON.stringify({
                                             token: jwt.sign({
                                                 idUser: user._id,
-                                                rank: count,
+                                                rank: userRank,
                                             }, keyToken)
                                         }));
-                                        resolve(count)
+
+                                        rankController = await getRankController();
+
+                                        resolve(userRank)
                                     })
                                     .catch(err => reject(err))
                             })
                             .catch(err => reject(err))
                     })
+            })
+        }
+
+        function getRankController() {
+            return new Promise(resolve => {
+                Stack.find({}).sort({rank: 1}).limit(1)
+                    .then(stackElement => {
+                        resolve(stackElement[0].rank);
+                    }).catch(err => console.error(err))
             })
         }
 
@@ -113,8 +132,11 @@ exports.connected = (ws) => {
         }
     });
     ws.on('close', () => {
-        mega.write("01002011001200");
-        mega.close();
+        if (mega) {
+            mega.write("01002011001200");
+            mega.close();
+            mega = null;
+        }
         const decodedToken = jwt.verify(token, keyToken);
         Stack.deleteOne({idUser: decodedToken.idUser})
             .then(() => {
@@ -123,4 +145,5 @@ exports.connected = (ws) => {
             })
     })
 }
+
 
