@@ -68,7 +68,10 @@ exports.connected = (ws) => {
             else {
                 //update rankController
                 rankController = await getRankController();
-                ws.send("not your turn");
+                ws.send(JSON.stringify({
+                    err: "not your turn",
+                    rank: rank - rankController
+                }));
             }
         }
 
