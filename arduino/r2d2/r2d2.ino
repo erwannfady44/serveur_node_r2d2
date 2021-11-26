@@ -1,8 +1,8 @@
 int commande[4];
 
-const int leftforward = 4;
-const int leftbackward = 5;
-const int rightforward = 6;
+const int leftforward = 9;
+const int leftbackward = 10;
+const int rightforward = 8;
 const int rightbackward = 7;
 
 void setup() {
@@ -16,7 +16,7 @@ void setup() {
 }
 
 void loop() {
-  String msg = readData();
+  /*String msg = readData();
   if (msg != "") {
     decodePayload(msg, commande);
     if (commande[0] == 2)
@@ -24,7 +24,12 @@ void loop() {
     else
       digitalWrite(LED_BUILTIN, LOW);
   }
-  delay(50);
+  delay(50);*/
+  commande[0] = 1;
+  commande[1] = 100;
+  commande[2] = 1;
+  commande[3] = 100;
+  move(commande);
 
 }
 
