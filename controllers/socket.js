@@ -1,5 +1,5 @@
-const usbSerial = '/dev/ttyUSB0';
-//const usbSerial = 'COM4';
+//const usbSerial = '/dev/ttyUSB0';
+const usbSerial = 'COM4';
 const SerialPort = require('serialport');
 const jwt = require('jsonwebtoken');
 
@@ -29,8 +29,7 @@ exports.connected = (ws) => {
                 console.log(err.message)
                 ws.send(JSON.stringify(err));
             }
-        }
-        else {
+        } else {
             token = data.token
             const decodedToken = jwt.verify(data.token, keyToken);
             const rank = decodedToken.rank;
@@ -127,7 +126,7 @@ exports.connected = (ws) => {
 
         function nameAlreadyUse(name) {
             return new Promise((resolve, reject) => {
-                User.findOne({where:{name: name}})
+                User.findOne({where: {name: name}})
                     .then((user) => {
                         resolve(user !== null)
                     }).catch(err => reject(err))
@@ -143,9 +142,15 @@ exports.connected = (ws) => {
         }
         if (token) {
             const decodedToken = jwt.verify(token, keyToken);
-            Stack.deleteOne({idUser: decodedToken.idUser})
+            Stack.destroy({
+                where: {idUser: decodedToken.idUser}
+            })
                 .then(() => {
-                    User.deleteOne({id: decodedToken.idUser})
+                    User.destroy({
+                        where: {
+                            id: decodedToken.idUser
+                        }
+                    })
                         .then(() => console.log("close"))
                 })
         }

@@ -16,21 +16,28 @@ void setup() {
 }
 
 void loop() {
-  /*String msg = readData();
+  int error = 0;
+  String msg = readData();
   if (msg != "") {
+    error = 0;
     decodePayload(msg, commande);
+    move(commande);
     if (commande[0] == 2)
       digitalWrite(LED_BUILTIN, HIGH);
     else
       digitalWrite(LED_BUILTIN, LOW);
-  }
-  delay(50);*/
-  commande[0] = 1;
-  commande[1] = 100;
-  commande[2] = 1;
-  commande[3] = 100;
-  move(commande);
-
+  }/* else {
+    error++;
+    if (error == 10) {
+      commande[0] = 0;
+      commande[1] = 0;
+      commande[2] = 0;
+      commande[3] = 0;
+    }
+    error = 0;
+  }*/
+  
+  delay(50);
 }
 
 String readData() {
@@ -73,6 +80,8 @@ void decodePayload(String payload, int commande[]) {
         break; 
     }
   }
+  commande[1] = 255;
+  commande[3] = 255;
 }
 
 int strToHex (String str) {
