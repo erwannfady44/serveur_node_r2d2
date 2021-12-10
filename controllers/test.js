@@ -3,7 +3,9 @@
 //var mega = new SerialPort('/dev/ttyUSB0', {baudRate: 9600 });
 const p = "01202211FF12FF";
 //main();
-strToHex("01")
+//strToHex("01")
+int = 255
+console.log(int.toString(16).toUpperCase())
 
 function decode(payload) {
     let i = 0;
