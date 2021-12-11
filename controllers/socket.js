@@ -45,9 +45,9 @@ exports.connected = (ws) => {
                     "02" +
                     data.direction2.toString(16).toUpperCase() +
                     "11" +
-                    (data.speed1 < 16 ? '0' + data.speed1.toString(16).toUpperCase() : data.speed1.toString(16).toUpperCase()) +
+                    (parseInt(data.speed1) < 16 ? '0' + parseInt(data.speed1).toString(16).toUpperCase() : parseInt(data.speed1).toString(16).toUpperCase()) +
                     "12" +
-                    (data.speed2 < 16 ? '0' + data.speed2.toString(16).toUpperCase() : data.speed2.toString(16).toUpperCase())
+                    (parseInt(data.speed2) < 16 ? '0' + parseInt(data.speed2).toString(16).toUpperCase() : parseInt(data.speed2).toString(16).toUpperCase())
 
                 //send data to arduino
                 console.log(payload)
