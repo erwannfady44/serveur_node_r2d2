@@ -1,114 +1,71 @@
-int commande[4];
+#include <Wire.h>
+# define I2C_SLAVE_ADDRESS 04 // 12 pour l'esclave 2 et ainsi de suite
 
 const int leftforward = 9;
 const int leftbackward = 10;
 const int rightforward = 8;
 const int rightbackward = 7;
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
 
+int data[4] = {};
+
+int lastData = 100;
+void setup()
+{
+  Wire.begin(I2C_SLAVE_ADDRESS);
+  Wire.onReceive(receiveEvent);
+  Serial.begin(9600);
+  
+  pinMode(LED_BUILTIN, OUTPUT);
+  
   pinMode(leftforward, OUTPUT);
   pinMode(leftbackward, OUTPUT);
   pinMode(rightforward, OUTPUT);
   pinMode(rightbackward, OUTPUT);
 }
-
-void loop() {
-  int error = 0;
-  String msg = readData();
-  if (msg != "") {
-    error = 0;
-    decodePayload(msg, commande);
-    move(commande);
-    if (commande[0] == 2)
+void loop(){  
+  
+  if (data[0] == 2)
       digitalWrite(LED_BUILTIN, HIGH);
-    else
+  else
       digitalWrite(LED_BUILTIN, LOW);
-  }/* else {
-    error++;
-    if (error == 10) {
-      commande[0] = 0;
-      commande[1] = 0;
-      commande[2] = 0;
-      commande[3] = 0;
-    }
-    error = 0;
-  }*/
-  
-  delay(50);
-}
 
-String readData() {
-  String msg = "";
-  if (Serial.available()) {
-    delay(10);
-    while (Serial.available() > 0) {
-      msg += (char)Serial.read();
-    }
-    Serial.flush();
-  }
-  return msg;
-}
-
-void decodePayload(String payload, int commande[]) {
-  int i = 0;
-
-  while (i < payload.length() - 1) {
-    int code = strToHex(payload.substring(i, i + 2));
-    i+=2;
-    switch(code) {
-      case 0x01:
-        commande[0] = strToHex(payload.substring(i, i + 1));
-        i += 1;
-        break;
-
-      case 0x02:
-        commande[1] = strToHex(payload.substring(i, i + 1));
-        i += 1;
-        break;
-        
-      case 0x11:
-        commande[2] = strToHex(payload.substring(i, i + 2));
-        i += 2;
-        break;
-
-      case 0x12:
-        commande[3] = strToHex(payload.substring(i, i + 2));
-        i += 2;
-        break; 
-    }
-  }
-  commande[1] = 255;
-  commande[3] = 255;
-}
-
-int strToHex (String str) {
-  int result = 0;
-  int j = 0;
-  
-  for (int i = str.length() - 1; i >= 0; i--) {
-    if (str.charAt(i) >= 65)
-      result += (str.charAt(i) - 'A' + 10) * mathPow(16, j++);
-    else {
-      result += (str.charAt(i) - '0') * mathPow(16, j++);
+  if (lastData == 0) {
+    for (int i = 0; i < 4; i++) {
+      data[i] = 0;
     }
   } 
-  return result;
+  lastData -= 1;
+  delay(10);
 }
 
-int mathPow(int x, int y) {
-  if (y == 0)
-    return 1;
-
-  int result = 1;
-
-  for (int i = 0; i < y; i++) {
-    result = result * x;
+void receiveEvent(int lenght) {
+  int tab[lenght] = {0};
+  
+  for (int i = 0; i < lenght; i++) {
+    tab[i] = Wire.read();
   }
 
-  return result;
+  for (int i = 0; i < lenght; i++) {
+    switch(tab[i]) {
+      case 0x01:
+        data[0] = tab[++i];
+        break;
+
+       case 0x02:
+        data[2] = tab[++i];
+        break;
+
+       case 0x11:
+        data[1] = tab[++i];
+        break;
+
+       case 0x12:
+        data[3] = tab[++i];
+        break;
+    }
+  }
+  lastData = 10;
 }
 
 void move(int commande[]) {
