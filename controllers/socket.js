@@ -1,4 +1,3 @@
-const SerialPort = require('serialport');
 const jwt = require('jsonwebtoken');
 
 const User = require('../Models').User;
