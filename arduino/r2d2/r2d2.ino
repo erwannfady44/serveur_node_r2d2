@@ -1,5 +1,5 @@
 #include <Wire.h>
-# define I2C_SLAVE_ADDRESS 04 // 12 pour l'esclave 2 et ainsi de suite
+# define I2C_SLAVE_ADDRESS 0x08 // 12 pour l'esclave 2 et ainsi de suite
 
 const int leftforward = 9;
 const int leftbackward = 10;
@@ -24,7 +24,9 @@ void setup()
   pinMode(rightbackward, OUTPUT);
 }
 void loop(){  
-  
+  for (int i = 0; i < 4; i++) {
+    Serial.print(data[i]);
+  }Serial.print('\n');
   if (data[0] == 2)
       digitalWrite(LED_BUILTIN, HIGH);
   else
