@@ -1,20 +1,20 @@
 {
   "development": {
-    "username": "root",
+    "username": "r2d2",
     "password": "asso@ir2D2",
     "database": "r2d2",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
+    "username": "r2d2",
     "password": null,
     "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
+    "username": "r2d2",
     "password": null,
     "database": "database_production",
     "host": "127.0.0.1",
