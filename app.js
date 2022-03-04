@@ -7,6 +7,9 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
+const User = require('../models').User;
+const Stack = require('../models').Stack;
+
 const app = express();
 
 // view engine setup
@@ -37,5 +40,12 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const decodedToken = jwt.verify(token, keyToken);
+Stack.destroy({})
+    .then(() => {
+      User.destroy({})
+          .then(() => console.log("delete"))
+    })
 
 module.exports = app;
