@@ -42,10 +42,10 @@ app.use(function(err, req, res, next) {
 });
 
 Stack.destroy({
-    where: 1
+    where: {}
 })
     .then(() => {
-      User.destroy({where: 1})
+      User.destroy({where: {}})
           .then(() => console.log("delete"))
     })
 
