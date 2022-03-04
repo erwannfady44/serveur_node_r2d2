@@ -1,10 +1,10 @@
 #include <Wire.h>
 # define I2C_SLAVE_ADDRESS 0x08 // 12 pour l'esclave 2 et ainsi de suite
 
-const int leftforward = 9;
-const int leftbackward = 10;
-const int rightforward = 8;
-const int rightbackward = 7;
+const int leftforward = 8;
+const int leftbackward = 7;
+const int rightforward = 9;
+const int rightbackward = 10;
 
 
 int data[4] = {};
@@ -39,6 +39,7 @@ void loop(){
   } 
   lastData -= 1;
   delay(10);
+  move(data);
 }
 
 void receiveEvent(int lenght) {
