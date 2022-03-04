@@ -7,8 +7,8 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
-const User = require('models').User;
-const Stack = require('models').Stack;
+const User = require('./models').User;
+const Stack = require('./models').Stack;
 
 const app = express();
 
@@ -41,10 +41,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const decodedToken = jwt.verify(token, keyToken);
-Stack.destroy({})
+Stack.destroy({
+    where: 1
+})
     .then(() => {
-      User.destroy({})
+      User.destroy({where: 1})
           .then(() => console.log("delete"))
     })
 
