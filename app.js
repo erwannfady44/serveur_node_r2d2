@@ -7,8 +7,8 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
-const User = require('../models').User;
-const Stack = require('../models').Stack;
+const User = require('models').User;
+const Stack = require('models').Stack;
 
 const app = express();
 
